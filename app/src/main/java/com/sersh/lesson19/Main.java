@@ -7,41 +7,62 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class Main extends AppCompatActivity implements View.OnClickListener {
     private Button one, two, three, four, five, six, seven, eigth, nine, zero;
     private Button plus, minus, multiplication, division, step, result, delete, ligthDelete, dot, plusminus;
     private final int MENU_QUIT_ID = 2;
-    private TextView textView;
+    private TextView textView, textView2;
     private ListView listView;
-    private boolean action = true;
-    private boolean getResult = true;
-    private boolean getDelete = true;
+    private boolean actionSwitch = true;
+    private boolean resultSwitch = true;
+    private boolean deleteSwitch = true;
     private boolean LasSing = true;
-    private boolean dotSwich = true;
-    private boolean plusMinusSwich = true;
-    private static float[] his = new float[3];
+    private boolean dotSwitch = true;
+    private boolean plusMinusSwitch = true;
     private String forNumberOne = "", forNumberTwo = "", sing = "", contein, textForView = "";
     private final String LOG_TAG = "calc";
-    ArrayList<Map<String, String>> data = new ArrayList<>();
-    Map<String, String> mapa = new HashMap<>();
+    ArrayList<String> dat;
+    ArrayAdapter Adapter;
 
-    //  double num1 = 0, num2 = 0, resolt = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initAdapter ();
         init();
     }
 
+    private void initAdapter () {
+        dat = new ArrayList<>();
+        Adapter = new ArrayAdapter(this, R.layout.item, dat);
+        listView = (ListView) findViewById(R.id.history);
+        listView.setAdapter(Adapter);
+      //  adapterLisener ();
+    }
+
+    private void adapterLisener ()
+    {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int number = position;
+                actionSwitch = true;
+                resultSwitch = true;
+                deleteSwitch = true;
+                forNumberOne = "";
+                forNumberTwo = "";
+                sing = "";
+            }
+        });
+    }
     private void init() {
         textView = (TextView) findViewById(R.id.tvResult);
         one = (Button) findViewById(R.id.one);
@@ -126,20 +147,20 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 textForView = textForView + "0";
                 break;
             case R.id.dot:
-                if (dotSwich) {
+                if (dotSwitch) {
                     textForView = textForView + ".";
                 }
-                dotSwich = false;
+                dotSwitch = false;
                 break;
             case R.id.delete:
-                getDelete = false;
+                deleteSwitch = false;
                 break;
             case R.id.ligthDelete:
                 LasSing = false;
                 break;
             case R.id.result:
-                if (!action) {
-                    getResult = false;
+                if (!actionSwitch) {
+                    resultSwitch = false;
                 }
                 break;
             case R.id.plus:
@@ -163,25 +184,25 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 actionSing();
                 break;
             case R.id.plusminus:
-                plusMinusSwich = false;
+                plusMinusSwitch = false;
                 break;
         }
 
-        if (!getResult) {
+        if (!resultSwitch) {
             resultAction();
         } else {
-            if (!action) {
+            if (!actionSwitch) {
                 forNumberTwo = forNumberTwo + textForView;
                 if (forNumberTwo.equals("")) {
                     if (!LasSing) {
                         sing = "";
-                        action = true;
+                        actionSwitch = true;
                     }
                 }
                 if (!LasSing) {
                     forNumberTwo = deliteLastSing(forNumberTwo);
                 }
-                if (!plusMinusSwich) {
+                if (!plusMinusSwitch) {
                     forNumberTwo = plusMinusAction(forNumberTwo);
                 }
 
@@ -193,7 +214,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 if (!LasSing) {
                     forNumberOne = deliteLastSing(forNumberOne);
                 }
-                if (!plusMinusSwich) {
+                if (!plusMinusSwitch) {
                     forNumberOne = plusMinusAction(forNumberOne);
                 }
             }
@@ -220,9 +241,9 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void actionSing() {
-        action = false;
+        actionSwitch = false;
         textForView = "";
-        dotSwich = true;
+        dotSwitch = true;
     }
 
     private void ifDotZero() {
@@ -235,10 +256,10 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void remuvAction() {
-        if (!getDelete) {
-            action = true;
-            getResult = true;
-            getDelete = true;
+        if (!deleteSwitch) {
+            actionSwitch = true;
+            resultSwitch = true;
+            deleteSwitch = true;
             forNumberOne = "";
             forNumberTwo = "";
             sing = "";
@@ -273,27 +294,22 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 resolt = Math.pow(num1, num2);
                 break;
         }
-        action = true;
-        getResult = true;
+        actionSwitch = true;
+        resultSwitch = true;
         forNumberOne = resolt + "";
         forNumberTwo = "";
         sing = "";
         ifDotZero();
         contein = forNumberOne;
 
-//        mapa.put("text",contein);
-//        data.add(mapa);
-//        String [] from = {"text"};
-//        int [] to = {R.id.one};
-//        SimpleAdapter simpleAdapter= new SimpleAdapter(this,data,R.id.history,from,to);
-//        listView = (ListView) findViewById(R.id.history);
-//        listView.setAdapter(simpleAdapter);
+        dat.add(contein);
+        Adapter.notifyDataSetChanged();
     }
 
     private String plusMinusAction(String chang) {
             if (chang.equals(""))
             {
-                plusMinusSwich = true;
+                plusMinusSwitch = true;
                 return "";
             }
             char [] chars = chang.toCharArray();
@@ -312,7 +328,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 }
                 chang = "-" + chang;
             }
-        plusMinusSwich = true;
+        plusMinusSwitch = true;
            return chang;
     }
 

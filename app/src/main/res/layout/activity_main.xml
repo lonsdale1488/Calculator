@@ -7,14 +7,19 @@
     <ListView
         android:id="@+id/history"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
+        android:stackFromBottom="true"
+        android:layout_marginRight="10dp"
+        android:divider="@null"
+        android:layout_weight="2"
         >
     </ListView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="330dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1.5">
 
         <TextView
             android:id="@+id/tvResult"
@@ -37,10 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="10pt"
-            android:layout_marginRight="10pt"
-            android:layout_marginBottom="10pt"
-
             android:layout_weight="1">
 
             <LinearLayout
@@ -185,7 +186,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/green"
+                    android:backgroundTint="@color/green"
                     android:text="="
                     android:textSize="16sp" />
             </LinearLayout>
@@ -203,7 +204,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/red"
+                    android:backgroundTint="@color/red"
                     android:text="C"
                     android:textSize="16sp" />
 
